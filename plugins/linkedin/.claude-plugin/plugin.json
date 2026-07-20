@@ -1,0 +1,11 @@
+{
+  "name": "linkedin",
+  "displayName": "LinkedIn",
+  "version": "0.1.0",
+  "description": "LinkedIn 게시글 작성을 돕는 플러그인",
+  "author": {
+    "name": "jeongsion",
+    "email": "snsdhsmsqka@gmail.com"
+  },
+  "keywords": ["linkedin", "post", "conference", "writing"]
+}
