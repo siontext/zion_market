@@ -1,0 +1,11 @@
+{
+  "name": "conference-finder",
+  "displayName": "Conference Finder",
+  "version": "0.1.0",
+  "description": "갈만한 AI/개발 컨퍼런스·밋업을 찾아 추천하는 플러그인",
+  "author": {
+    "name": "jeongsion",
+    "email": "snsdhsmsqka@gmail.com"
+  },
+  "keywords": ["conference", "meetup", "event", "AI", "networking"]
+}

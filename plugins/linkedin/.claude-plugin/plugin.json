@@ -1,7 +1,7 @@
 {
   "name": "linkedin",
   "displayName": "LinkedIn",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "LinkedIn 게시글 작성을 돕는 플러그인",
   "author": {
     "name": "jeongsion",
