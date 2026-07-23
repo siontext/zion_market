@@ -10,7 +10,7 @@
       "name": "linkedin",
       "source": "./plugins/linkedin",
       "description": "LinkedIn 게시글 작성을 돕는 플러그인",
-      "version": "0.1.2"
+      "version": "0.1.3"
     }
   ]
 }
