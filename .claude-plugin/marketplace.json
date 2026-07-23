@@ -16,7 +16,7 @@
       "name": "conference-finder",
       "source": "./plugins/conference-finder",
       "description": "갈만한 AI/개발 컨퍼런스·밋업을 찾아 추천하는 플러그인",
-      "version": "0.1.0"
+      "version": "0.1.1"
     }
   ]
 }
