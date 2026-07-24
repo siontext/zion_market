@@ -2,7 +2,7 @@
 name: conference-finder
 description: 갈만한 AI/개발 컨퍼런스·밋업을 찾아 추천할 때 사용. Luma 서울 페이지와 Meetup 검색을 읽어 관심 프로필로 거른 뒤, "배울 게 깊고 만날 사람이 좋은" 알짜 이벤트를 앞세워 추천하고, 고른 이벤트는 개별 페이지에서 날짜·신청링크를 확인해준다.
 when_to_use: 사용자가 참석할 만한 컨퍼런스·밋업·세미나를 찾아달라거나 추천해달라고 할 때
-allowed-tools: "WebFetch WebSearch mcp__claude_ai_Notion__notion-create-pages mcp__claude_ai_Notion__notion-search mcp__claude_ai_Notion__notion-update-data-source"
+allowed-tools: "WebFetch WebSearch mcp__claude_ai_Notion__notion-create-pages mcp__claude_ai_Notion__notion-search mcp__claude_ai_Notion__notion-update-data-source mcp__claude_ai_Notion__notion-fetch mcp__claude_ai_Notion__notion-update-view"
 ---
 
 # 갈만한 컨퍼런스·밋업 찾기
@@ -138,6 +138,10 @@ Luma·Meetup은 소규모 밋업 위주라 **대형 컨퍼런스를 놓친다.**
   - `이벤트명`=제목, `유형`=핸즈온/컨퍼런스/밋업/해커톤/세미나 중 하나, `날짜`=확인된 날짜(없으면 비움), `장소`, `관련도`=상/중/하, `알짜`=`⭐0~6`(4.7 점수), `출처`=Luma/Meetup/웹검색/Dev-Event, `링크`=신청/상세 URL, `요약`=Step 5의 "무슨 이벤트" 한 줄 요약(뒤에 "알짜 근거"를 이어 붙인다), `상태`=`가고싶음`(기본)
   - `알짜` 속성이 DB에 없으면 `notion-update-data-source`로 숫자(또는 상/중/하 셀렉트) 컬럼을 먼저 추가한 뒤 저장한다.
 - **중복 방지**: 저장 전에 `mcp__claude_ai_Notion__notion-search`로 같은 이벤트명이 이미 있는지 확인하고, 있으면 건너뛴다.
+- **정렬 뷰 설정 (알짜순)**: DB 뷰가 알짜순으로 정렬돼 있지 않으면 `notion-update-view`로 아래처럼 설정한다 — 지난 이벤트는 아래로, 그 위에서 알짜 높은 순으로 뜨게:
+  - `SORT BY "정렬" ASC, "알짜" DESC, "관련도" ASC, "날짜" ASC` (`정렬`은 지난 이벤트를 아래로 내리는 기존 formula. `관련도` ASC = 상→중→하)
+  - `알짜` 컬럼이 표에 안 보이면 `SHOW`에 포함시킨다.
+  - (뷰 ID는 `notion-fetch`로 DB를 열어 `<view url="view://...">`에서 얻는다.)
 - 저장 후 추가된 개수와 DB 링크를 알려준다.
 
 ## 주의사항
