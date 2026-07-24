@@ -2,7 +2,7 @@
 name: conference-finder
 description: 갈만한 AI/개발 컨퍼런스·밋업을 찾아 추천할 때 사용. Luma 서울 페이지와 Meetup 검색을 읽어 사용자의 관심 프로필로 관련도순으로 추천하고, 고른 이벤트는 개별 페이지에서 날짜·신청링크를 확인해준다.
 when_to_use: 사용자가 참석할 만한 컨퍼런스·밋업·세미나를 찾아달라거나 추천해달라고 할 때
-allowed-tools: "WebFetch WebSearch"
+allowed-tools: "WebFetch WebSearch mcp__claude_ai_Notion__notion-create-pages mcp__claude_ai_Notion__notion-search"
 ---
 
 # 갈만한 컨퍼런스·밋업 찾기
@@ -87,6 +87,19 @@ Luma·Meetup은 소규모 밋업 위주라 **대형 컨퍼런스를 놓친다.**
 
 - 사용자가 고른 이벤트의 **개별 페이지 URL**을 `WebFetch`로 열어 정확한 날짜·시간·장소·신청 링크·상세 내용을 확인해 알려준다.
 - 개별 페이지 URL을 모르면, 제목으로 `WebSearch`하거나 사용자에게 링크를 물어본다.
+
+### 7. Notion 기록 (선택)
+
+추천 결과를 **Notion "컨퍼런스 트래커" DB**에 저장한다.
+
+- 대상 DB: `컨퍼런스 트래커`
+  - 페이지 URL: `https://app.notion.com/p/80fee3dffbbd436d8e5161b1fce0410f`
+  - 데이터 소스: `collection://6edf60d6-31eb-4b30-9836-9012b6fd8502`
+- **먼저 물어본다**: "이 결과를 Notion 컨퍼런스 트래커에 저장할까요? (전체 / 고른 것만 / 안 함)". 사용자가 원할 때만 저장한다.
+- `mcp__claude_ai_Notion__notion-create-pages`로 위 데이터 소스에 각 이벤트를 한 행씩 추가한다. 속성 매핑:
+  - `이벤트명`=제목, `유형`=핸즈온/컨퍼런스/밋업/해커톤/세미나 중 하나, `날짜`=확인된 날짜(없으면 비움), `장소`, `관련도`=상/중/하, `출처`=Luma/Meetup/웹검색/Dev-Event, `링크`=신청/상세 URL, `상태`=`가고싶음`(기본)
+- **중복 방지**: 저장 전에 `mcp__claude_ai_Notion__notion-search`로 같은 이벤트명이 이미 있는지 확인하고, 있으면 건너뛴다.
+- 저장 후 추가된 개수와 DB 링크를 알려준다.
 
 ## 주의사항
 

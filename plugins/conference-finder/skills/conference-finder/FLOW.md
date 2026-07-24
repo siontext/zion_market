@@ -20,6 +20,8 @@ flowchart TD
     J[["4.5 날짜 백필<br/>Luma 상위 추천 개별 페이지<br/>WebFetch로 날짜 채움"]] --> K
 
     K[["5. 추천 목록 제시 (상위 5~8)<br/>한눈 요약 표(유형·날짜·관련도)<br/>+ 상세 카드<br/>· 무슨 이벤트 · 출처+링크 · 추천 이유"]] --> L{자세히 볼<br/>이벤트 선택?}
+    K -.선택.-> R[["7. Notion 기록<br/>컨퍼런스 트래커 DB<br/>notion-create-pages (중복 방지)"]]
+    R --> N
 
     L -- 예 --> M[["6. 상세 확인<br/>개별 페이지 WebFetch<br/>날짜·주소·신청링크"]]
     L -- 아니오 --> N([종료])
@@ -31,6 +33,6 @@ flowchart TD
     classDef step fill:#f1f8e9,stroke:#558b2f,color:#33691e;
     classDef done fill:#fff3e0,stroke:#e65100,color:#e65100;
     class D,E,W src;
-    class F,J,K,M step;
+    class F,J,K,M,R step;
     class A,N,P done;
 ```
