@@ -6,7 +6,7 @@ flowchart TD
     C --> D
     C2 --> D
 
-    D[["1. Luma 카테고리 읽기<br/>WebFetch luma.com/discover/seoul/ai<br/>+ /tech (폴백: /seoul)"]] --> F
+    D[["1. Luma 읽기 (공개 JSON API)<br/>api.luma.com/discover/get-paginated-events<br/>?category_slug=ai&place_slug=seoul<br/>날짜 start_at 포함 (UTC→KST +9)"]] --> F
     E[["2. Meetup 검색 읽기<br/>WebFetch meetup.com/find<br/>키워드: AI · backend · DevOps"]] --> F
     W[["3. 웹검색 + Dev-Event<br/>WebSearch 큰 컨퍼런스<br/>+ WebFetch github Dev-Event"]] --> F
     D -.동시.- E
@@ -17,7 +17,7 @@ flowchart TD
     G -- 없음 --> J
     H --> J
 
-    J[["4.5 날짜 백필<br/>Luma 상위 추천 개별 페이지<br/>WebFetch로 날짜 채움"]] --> K
+    J[["4.5 날짜 확인 (대부분 자동)<br/>API가 날짜 제공 → 비면 개별 페이지<br/>그래도 없으면 사용자에게 질문"]] --> K
 
     K[["5. 추천 목록 제시 (상위 5~8)<br/>한눈 요약 표(유형·날짜·관련도)<br/>+ 상세 카드<br/>· 무슨 이벤트 · 출처+링크 · 추천 이유"]] --> L{자세히 볼<br/>이벤트 선택?}
     K -.선택.-> R[["7. Notion 기록<br/>컨퍼런스 트래커 DB<br/>notion-create-pages (중복 방지)"]]
