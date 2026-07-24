@@ -17,9 +17,13 @@ flowchart TD
     G -- 없음 --> J
     H --> J
 
-    J[["4.5 날짜 확인 (대부분 자동)<br/>API가 날짜 제공 → 비면 개별 페이지<br/>그래도 없으면 사용자에게 질문"]] --> K
+    J[["4.5 날짜 확인 (대부분 자동)<br/>API가 날짜 제공 → 비면 개별 페이지<br/>그래도 없으면 사용자에게 질문"]] --> S1
 
-    K[["5. 추천 목록 제시 (상위 5~8)<br/>한눈 요약 표(유형·날짜·관련도)<br/>+ 상세 카드<br/>· 무슨 이벤트 · 출처+링크 · 추천 이유"]] --> L{자세히 볼<br/>이벤트 선택?}
+    S1[["4.7a 사람 축 채점 (공짜)<br/>API 필드: require_approval ·<br/>calendar.verified · hosts · guest_count"]] --> S2
+    S2[["4.7b 깊이 축 정독 (관련도 상·중만)<br/>개별 페이지 설명 WebFetch<br/>형식·아젠다 → ⭐알짜(0~6)<br/>thin-page 폴백"]] --> S3
+    S3[["4.8 평판 확인 (⭐ 상위 3~5개만)<br/>WebSearch 과거 후기·주최자<br/>⭐ ±보정"]] --> K
+
+    K[["5. 추천 목록 제시 (⭐알짜 순)<br/>한눈 표(유형·날짜·관련도·⭐알짜)<br/>+ 상세 카드<br/>· 무슨 이벤트 · 알짜 근거 · 출처+링크"]] --> L{자세히 볼<br/>이벤트 선택?}
     K -.선택.-> R[["7. Notion 기록<br/>컨퍼런스 트래커 DB<br/>notion-create-pages (중복 방지)"]]
     R --> N
 
@@ -33,6 +37,6 @@ flowchart TD
     classDef step fill:#f1f8e9,stroke:#558b2f,color:#33691e;
     classDef done fill:#fff3e0,stroke:#e65100,color:#e65100;
     class D,E,W src;
-    class F,J,K,M,R step;
+    class F,J,S1,S2,S3,K,M,R step;
     class A,N,P done;
 ```
