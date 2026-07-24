@@ -2,7 +2,7 @@
 name: conference-finder
 description: 갈만한 AI/개발 컨퍼런스·밋업을 찾아 추천할 때 사용. Luma 서울 페이지와 Meetup 검색을 읽어 관심 프로필로 거른 뒤, "배울 게 깊고 만날 사람이 좋은" 알짜 이벤트를 앞세워 추천하고, 고른 이벤트는 개별 페이지에서 날짜·신청링크를 확인해준다.
 when_to_use: 사용자가 참석할 만한 컨퍼런스·밋업·세미나를 찾아달라거나 추천해달라고 할 때
-allowed-tools: "WebFetch WebSearch mcp__claude_ai_Notion__notion-create-pages mcp__claude_ai_Notion__notion-search mcp__claude_ai_Notion__notion-update-data-source mcp__claude_ai_Notion__notion-fetch mcp__claude_ai_Notion__notion-update-view"
+allowed-tools: "WebFetch WebSearch mcp__claude_ai_Notion__notion-create-pages mcp__claude_ai_Notion__notion-search mcp__claude_ai_Notion__notion-query-data-sources mcp__claude_ai_Notion__notion-update-data-source mcp__claude_ai_Notion__notion-fetch mcp__claude_ai_Notion__notion-update-view"
 ---
 
 # 갈만한 컨퍼런스·밋업 찾기
@@ -136,12 +136,15 @@ Luma·Meetup은 소규모 밋업 위주라 **대형 컨퍼런스를 놓친다.**
 - **먼저 물어본다**: "이 결과를 Notion 컨퍼런스 트래커에 저장할까요? (전체 / 고른 것만 / 안 함)". 사용자가 원할 때만 저장한다.
 - `mcp__claude_ai_Notion__notion-create-pages`로 위 데이터 소스에 각 이벤트를 한 행씩 추가한다. 속성 매핑:
   - `이벤트명`=제목, `유형`=핸즈온/컨퍼런스/밋업/해커톤/세미나 중 하나, `날짜`=확인된 날짜(없으면 비움), `장소`, `관련도`=상/중/하, `알짜`=`⭐0~6`(4.7 점수), `출처`=Luma/Meetup/웹검색/Dev-Event, `링크`=신청/상세 URL, `요약`=Step 5의 "무슨 이벤트" 한 줄 요약(뒤에 "알짜 근거"를 이어 붙인다), `상태`=`가고싶음`(기본)
-  - `알짜` 속성이 DB에 없으면 `notion-update-data-source`로 숫자(또는 상/중/하 셀렉트) 컬럼을 먼저 추가한 뒤 저장한다.
-- **중복 방지**: 저장 전에 `mcp__claude_ai_Notion__notion-search`로 같은 이벤트명이 이미 있는지 확인하고, 있으면 건너뛴다.
-- **정렬 뷰 설정 (알짜순)**: DB 뷰가 알짜순으로 정렬돼 있지 않으면 `notion-update-view`로 아래처럼 설정한다 — 지난 이벤트는 아래로, 그 위에서 알짜 높은 순으로 뜨게:
-  - `SORT BY "정렬" ASC, "알짜" DESC, "관련도" ASC, "날짜" ASC` (`정렬`은 지난 이벤트를 아래로 내리는 기존 formula. `관련도` ASC = 상→중→하)
-  - `알짜` 컬럼이 표에 안 보이면 `SHOW`에 포함시킨다.
-  - (뷰 ID는 `notion-fetch`로 DB를 열어 `<view url="view://...">`에서 얻는다.)
+  - DB에 없는 속성은 `notion-update-data-source`로 먼저 추가한다: `알짜`(NUMBER), `제외`(CHECKBOX).
+- **중복 방지 (제외 포함 대조)**: 저장 전에 `mcp__claude_ai_Notion__notion-query-data-sources`로 기존 `이벤트명`을 **전부**(제외 체크된 것까지 포함) 한 번에 조회해, 이미 있는 이벤트는 건너뛴다.
+  - 예: `SELECT "이벤트명" FROM "collection://6edf60d6-31eb-4b30-9836-9012b6fd8502"` → 반환된 이름과 겹치는 후보 제외.
+  - 시맨틱 검색(`notion-search`)은 누락이 있을 수 있으므로 **정확 일치 대조는 SQL 조회를 쓴다.**
+- **⚠️ 삭제 금지**: 사용자가 별로라고 한 이벤트는 **행을 지우지 말고 `제외` 체크박스만 켜라(또는 켜져 있게 둔다).** 행이 남아 있어야 다음 수집 때 이름 대조로 재수집이 막힌다. 삭제하면 다음에 또 딸려온다.
+- **정렬·필터 뷰 설정**: DB 뷰가 아래대로 안 돼 있으면 `notion-update-view`로 설정한다 (뷰 ID는 `notion-fetch`로 DB를 열어 `<view url="view://...">`에서 얻는다):
+  - 정렬: `SORT BY "정렬" ASC, "알짜" DESC, "관련도" ASC, "날짜" ASC` (`정렬`=지난 이벤트를 아래로 내리는 기존 formula, `관련도` ASC = 상→중→하)
+  - 필터: `FILTER "제외" = false` (제외 체크한 이벤트는 뷰에서 숨김 — 클릭 한 번으로 치워짐)
+  - `알짜`·`제외` 컬럼이 표에 안 보이면 `SHOW`에 포함시킨다.
 - 저장 후 추가된 개수와 DB 링크를 알려준다.
 
 ## 주의사항
